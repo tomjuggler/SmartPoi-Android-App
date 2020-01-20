@@ -1,7 +1,10 @@
-# ProcessingAndroidDemo
-This demo explains how to embed processing sketch in your own app. For a step by step guide, head over to this wiki - https://github.com/processing/processing-android/wiki/Using-Eclipse-or-Android-Studio-for-Development
+# SmartPoi Android App
+This is a code dump of my Android App to control SmartPoi, the worlds first WiFi streaming poi. Receive images over WiFi and display them on the poi. 36 and 72px versions available. 
 
-##Screenshots:
-![Directional Light](http://i.imgur.com/XLSMzSOl.png)
-![Sketches](http://i.imgur.com/yvGolj6l.png)
-![Particles](http://i.imgur.com/ZYDYUZYl.png)
+Written in Processing and Android (Java)
+
+See the site circusscientist.com for details on how to build your own, look for SmartPoi in the menu. 
+
+
+
+
