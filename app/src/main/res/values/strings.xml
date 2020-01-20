@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Smart Poi Demo App</string>
+    <string name="ap_name">\"Smart_Poi_1\"</string>
+    <string name="ap_name2">\"Smart_Poi_2\"</string>
+    <string name="ap_name3">\"Smart_Poi_3\"</string>
+    <string name="settings_frag_name">Settings</string>
+    <string name="change_pattern_frag_name">Change Pattern</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_directional">Directional</string>
+    <string name="title_reflection">Reflection</string>
+    <string name="title_particles">Particles</string>
+    <string name="title_empty">OwnThing</string>
+    <string name="title_AndroidFlick">36px</string>
+    <string name="title_AndroidFlick72">72px</string>
+    <string name="title_Brightness">Brightness</string>
+    <string name="title_PGraphics_Pattern_Template">Computer Generated</string>
+    <string name="title_TimelineOnly">Timeline</string>
+    <string name="title_android_fft_minim">Beats</string>
+    <string name="title_ZapGame">Zap Game</string>
+    <string name="title_Settings">Settings</string>
+    <string name="title_Change_Pattern">Pattern</string>
+
+
+    <string name="ssid">Smart Poi 29C3</string>
+    <string name="key">Password1</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+    <string name="ip">192.168.8.77</string>
+    <string name="ip2">192.168.8.78</string>
+    <string name="ip3">192.168.8.79</string>
+</resources>
