@@ -22,6 +22,14 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -36,6 +44,10 @@ import za.tomjuggler.processingdemo.R;
 import android.view.WindowManager;
 import android.view.View;
 import android.os.Bundle;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import java.util.Arrays;
 
 import java.util.HashMap;
@@ -585,6 +597,8 @@ public class manyScreensAndroidFlick extends PApplet {
 
     //for Arrays.sort()
     boolean doPG = true;
+    boolean uploadNow = false;
+    String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     class Screen {
         int num;
@@ -709,6 +723,14 @@ public class manyScreensAndroidFlick extends PApplet {
                     pg.image(buttonsArrayList.get(whichPic).pic(), 0, 0);
                     println("whichPic is now: " + whichPic);
                     pg.endDraw();
+                    /////////////////////////////////////////////////////////////////
+                    //convert to bin and upload via post request here:
+                    //using backwards button for save .bin test: it works!
+                    if(backwards) {
+                        String nameAlphabet = str(alphabet.charAt(whichPic));
+                        message1(pg, nameAlphabet);
+                    }
+                    //////////////////////////////////////////////////////////////////
                     fill(255, 0, 0);
                     ellipse(buttonsArrayList.get(whichPic).x, buttonsArrayList.get(whichPic).y, buttonsArrayList.get(whichPic).w / 2, buttonsArrayList.get(whichPic).w / 2);
 //                    println("ellipse here");
@@ -1048,17 +1070,11 @@ public class manyScreensAndroidFlick extends PApplet {
 
 
     public void sendPGraphicsToPoiBackwards(PGraphics pgSend, int sendOpt) {
-        //Todo: change to another button for this one..
-        //using backwards button for save .bin test: it works!
-        String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        String nameAlphabet = str(alphabet.charAt(sendOpt));
-        message1(pgSend, nameAlphabet);
-        //now send it:
-//        PostRequest post = new PostRequest("http://192.168.1.1/edit"); //poi 1
 
 
 
-/*
+
+
         int pixelCounter = pgSend.width-1;
         byte[] message = new byte[numPixels];
         byte[] bigpx = new byte[72];
@@ -1108,7 +1124,7 @@ public class manyScreensAndroidFlick extends PApplet {
             //delay(100);
         }
 
- */
+
     }
 
     void message1(PImage cImg, String name) {
@@ -1179,8 +1195,27 @@ public class manyScreensAndroidFlick extends PApplet {
             }//end if y
         }//end for y
         saveBytes(messagePath + name + ".bin", testBin);
+
+        //send:
+        String url ="http://192.168.1.1/edit";
+        try {
+            upload(url, new File(messagePath + name + ".bin"));
+        } catch (java.io.IOException e){
+
+        }
     }
 
+    //OkHttp send:
+    public void upload(String url, File file) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody formBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                .build();
+        Request request = new Request.Builder().url(url).post(formBody).build();
+        Response response = client.newCall(request).execute();
+    }
 /*
     public void sendPGraphicsToPoi(PGraphics pgSend, int sendOpt) {
         int pixelCounter = 0;

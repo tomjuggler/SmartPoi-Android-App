@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.android.support:design:22.2.1'
     implementation 'com.android.support:appcompat-v7:22.2.1'
     implementation files('libs/SelectFile.jar')
+    implementation 'com.squareup.okhttp3:okhttp:4.1.0'
     implementation 'com.android.volley:volley:1.1.0'
 //    compile files('libs/processing-core.jar')
 }
