@@ -32,7 +32,7 @@ import hypermedia.net.*;
 import java.io.*;
 import controlP5.*;
 import za.tomjuggler.processingdemo.R;
-
+//import http.requests.*;
 import android.view.WindowManager;
 import android.view.View;
 import android.os.Bundle;
@@ -313,6 +313,7 @@ public class manyScreensAndroidFlick extends PApplet {
             screenBlank = !screenBlank;
         }
         if (buttonBackwards.over()) {
+
             backwards = !backwards;
         }
         if(sequenceShowTime<10){ //slider is on 0, so we choose the pic manually...
@@ -715,9 +716,9 @@ public class manyScreensAndroidFlick extends PApplet {
                 }//this is a test
                 if (!testing) {
                     if(backwards) {
-                        sendPGraphicsToPoiBackwards(pg, 0);
+                        sendPGraphicsToPoiBackwards(pg, whichPic);
                     } else {
-                    sendPGraphicsToPoi(pg, 0);
+                    sendPGraphicsToPoi(pg, whichPic);
                     }
 //                    println("sending");
                 }
@@ -891,9 +892,9 @@ public class manyScreensAndroidFlick extends PApplet {
 
             if (!testing) {
                 if(backwards) {
-                    sendPGraphicsToPoiBackwards(pg, 0);
+                    sendPGraphicsToPoiBackwards(pg, whichPic);
                 } else {
-                    sendPGraphicsToPoi(pg, 0);
+                    sendPGraphicsToPoi(pg, whichPic);
                 }
             }
         }
@@ -920,6 +921,7 @@ public class manyScreensAndroidFlick extends PApplet {
     DatagramSocket udpSocket2;
 
     public void sendPGraphicsToPoi(PGraphics pgSend, int sendOpt) {
+
         if(onRouter){
             numPixels = 72; //to accommodate big poi! not a real solution?! how does it look...
         }
@@ -1046,6 +1048,17 @@ public class manyScreensAndroidFlick extends PApplet {
 
 
     public void sendPGraphicsToPoiBackwards(PGraphics pgSend, int sendOpt) {
+        //Todo: change to another button for this one..
+        //using backwards button for save .bin test: it works!
+        String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        String nameAlphabet = str(alphabet.charAt(sendOpt));
+        message1(pgSend, nameAlphabet);
+        //now send it:
+//        PostRequest post = new PostRequest("http://192.168.1.1/edit"); //poi 1
+
+
+
+/*
         int pixelCounter = pgSend.width-1;
         byte[] message = new byte[numPixels];
         byte[] bigpx = new byte[72];
@@ -1083,41 +1096,7 @@ public class manyScreensAndroidFlick extends PApplet {
 
             if (pixelCounter == -1) {
                 if(!testing){
-                    /*
-                    //below seems to work the same as processing method, not much difference...
-                    //method from: http://msdalp.github.io/2014/03/09/Udp-on-Android/
-                    //with socket close from: http://android-er.blogspot.co.za/2016/05/android-datagramudp-client-example.html
-                    try {
-                        udpSocket = new DatagramSocket(UDPport);
-                        InetAddress serverAddr = InetAddress.getByName(ip);
-                        DatagramPacket packet = new DatagramPacket(message, message.length, serverAddr, UDPport);
-                        udpSocket.send(packet);
-                    } catch (SocketException e) {
-                        Log.e("Udp:", "Socket Error:", e);
-                    } catch (IOException e) {
-                        Log.e("Udp Send:", "IO Error:", e);
-                    }finally {
-                        if (udpSocket != null) {
-                            udpSocket.close(); //this seems wrong, close every time...?
-                        }
-                    }
-                    //and try again for another ip
 
-                    try {
-                        udpSocket2 = new DatagramSocket(UDPport);
-                        InetAddress serverAddr2 = InetAddress.getByName(ip2);
-                        DatagramPacket packet2 = new DatagramPacket(message, message.length, serverAddr2, UDPport);
-                        udpSocket2.send(packet2);
-                    } catch (SocketException e) {
-                        Log.e("Udp:", "Socket Error:", e);
-                    } catch (IOException e) {
-                        Log.e("Udp Send:", "IO Error:", e);
-                    }finally {
-                        if (udpSocket2 != null) {
-                            udpSocket2.close(); //this seems wrong, close every time...??
-                        }
-                    }
-*/
                     //old:
                     udp.send(message, ip, UDPport); //disable for testing
                     udp.send(message, ip2, UDPport); //disable for testing
@@ -1125,19 +1104,81 @@ public class manyScreensAndroidFlick extends PApplet {
                 pixelCounter = pgSend.width-1;
             }
 
-    /*
-    if (pixelCounter == pgSend.width*2) { //72px test code
-      if (!testing) {
-        //      udp.send(message, ip, UDPport); //disable for testing
-        //      udp.send(message, ip2, UDPport); //disable for testing
-        udp.send(bigpx, ip, UDPport); //disable for testing
-        udp.send(bigpx, ip2, UDPport); //disable for testing
-      }
-      pixelCounter = 0;
-    }
-*/
+
             //delay(100);
         }
+
+ */
+    }
+
+    void message1(PImage cImg, String name) {
+        String messagePath = Environment.getExternalStorageDirectory().getPath() + "/Pictures/SmartPoi/WirelessSmartPoi/Messages1/";
+
+        int   r, g, b;
+        byte encodedRGB;
+        cImg.loadPixels();
+        int len1 = cImg.height;
+        int width1 = cImg.width;
+        int cImgSize = len1*width1;
+        byte[] testBin = new byte[cImgSize];
+
+        for (int y = 0; y < cImg.height; y++) {    //height
+            if (y == len1-1) {
+                    for (int x = 0; x < cImg.width; x++) {   //width
+                    int loc = x + y*cImg.width;
+
+                    if(x == 0) {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    } else if(x == (width1-1)) {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+//                    output.println("};");
+//                    output.println("struct pattern " + name + " = {" + width1 + ", " + len1 + "," + name + "Data};"); //not needed?
+                    } else {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    }
+
+                }//end for x
+                break;
+            }//end if y
+            else { //if y
+                for (int x = 0; x < cImg.width; x++) {   //width
+                    int loc = x + y*cImg.width;
+                    if(x == 0) {
+                        r = (int) red(cImg.pixels[loc]);
+                        // println("r is " + r);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    } else if(x == (width1-1)) {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    } else {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    }
+                }//end for x
+            }//end if y
+        }//end for y
+        saveBytes(messagePath + name + ".bin", testBin);
     }
 
 /*
