@@ -6,13 +6,30 @@ import android.content.res.Resources;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import controlP5.ControlP5;
 import controlP5.Slider;
@@ -22,6 +39,24 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import za.tomjuggler.processingdemo.R;
+//import http.requests.*;
+import android.view.WindowManager;
+import android.view.View;
+import android.os.Bundle;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
+import java.util.Arrays;
+
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
 
 import static za.tomjuggler.processingdemo.MainActivity.ipa1Saved;
 import static za.tomjuggler.processingdemo.MainActivity.ipa2Saved;
@@ -84,6 +119,9 @@ public class manyScreensAndroidFlick72px extends PApplet {
     boolean showOnce = true;
     Button buttonSwitchScreen;
     Button buttonSaveBattery;
+    Button buttonBackwards;
+    boolean backwards = false;
+
     PImage sunflower;
     boolean screenBlank = false;
     //brightness idea:
@@ -205,6 +243,14 @@ public class manyScreensAndroidFlick72px extends PApplet {
                 "",
                 1,
                 sunflower);
+        buttonBackwards = new Button (  width/6*3, height/6*5,
+                width/6, height/6,
+                true, color (0, 0, 0), //Black button
+                true, color (100),
+                "IMAGE\nBACKWARDS",
+                "",
+                1,
+                sunflower);
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         gesture = new KetaiGesture(this);
         //noStroke();
@@ -279,7 +325,12 @@ public class manyScreensAndroidFlick72px extends PApplet {
         if (buttonSaveBattery.over()) {
             screenBlank = !screenBlank;
         }
-        if(sequenceShowTime==0){ //slider is on 0, so we choose the pic manually...
+        if (buttonBackwards.over()) {
+
+            backwards = !backwards;
+        }
+        if(sequenceShowTime<10){ //slider is on 0, so we choose the pic manually...
+//            brightnessSlider.setVisible(false);
             for (int i = 0; i < screensArrayList.get(currentScreen).buttonsArrayList.size(); i++) {
                 if (screensArrayList.get(currentScreen).buttonsArrayList.get(i).over()) {
                     showOnce = true; //redraw screen
@@ -292,7 +343,7 @@ public class manyScreensAndroidFlick72px extends PApplet {
 
     public void keyPressed() {
         if (key == CODED) {
-            if (keyCode == MENU) {
+            if (keyCode == MENU) { //damn they removed this in Nougat!!!!!! Bastards!
                 showSlider = !showSlider;
                 /////////////////////////////////////brightness slider/////////////////////////////////////////////////////
                 if (showSlider) {
@@ -547,6 +598,8 @@ public class manyScreensAndroidFlick72px extends PApplet {
 
     //for Arrays.sort()
     boolean doPG = true;
+    boolean uploadNow = false;
+    String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     class Screen {
         int num;
@@ -642,6 +695,7 @@ public class manyScreensAndroidFlick72px extends PApplet {
                     buttonsArrayList.get(i).display();
                     buttonSwitchScreen.display();
                     buttonSaveBattery.display();
+                    buttonBackwards.display();
                 }
                 showOnce = false;
             }
@@ -672,13 +726,29 @@ public class manyScreensAndroidFlick72px extends PApplet {
                     pg.image(buttonsArrayList.get(whichPic).pic(), 0, 0);
                     println("whichPic is now: " + whichPic);
                     pg.endDraw();
-                    fill(255, 0, 0);
+                    /////////////////////////////////////////////////////////////////
+                    //convert to bin and upload via post request here:
+                    //using backwards button for save .bin test: it works!
+                    if(backwards) {
+                        String nameAlphabet = str(alphabet.charAt(whichPic));
+                        message1(pg, nameAlphabet);
+                    }
+                    //////////////////////////////////////////////////////////////////
+                    if(backwards){
+                        fill(0, 255, 0);
+                    } else {
+                        fill(255, 0, 0);
+                    }
                     ellipse(buttonsArrayList.get(whichPic).x, buttonsArrayList.get(whichPic).y, buttonsArrayList.get(whichPic).w / 2, buttonsArrayList.get(whichPic).w / 2);
 //                    println("ellipse here");
                     timer = millis(); //test as well
                 }//this is a test
                 if (!testing) {
-                    sendPGraphicsToPoi(pg, 0);
+                    if(backwards) {
+                        sendPGraphicsToPoiBackwards(pg, whichPic);
+                    } else {
+                    sendPGraphicsToPoi(pg, whichPic);
+                    }
 //                    println("sending");
                 }
 //            background(255, 0, 0);
@@ -703,6 +773,7 @@ public class manyScreensAndroidFlick72px extends PApplet {
                 for (int i = 0; i < buttonsArrayList.size (); i++) {
                     buttonsArrayList.get(i).display();
                     buttonSwitchScreen.display();
+                    buttonSaveBattery.display();
                 }
                 showOnce = false;
             }
@@ -833,6 +904,7 @@ public class manyScreensAndroidFlick72px extends PApplet {
                 //pg.tint(BRT); //tint not working on pg
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 pg.endDraw();
+                //Todo: create and upload .bin here
                 fill(255, 0, 0);
                 ellipse(buttonsArrayList.get(whichPic).x, buttonsArrayList.get(whichPic).y, buttonsArrayList.get(whichPic).w/2, buttonsArrayList.get(whichPic).w/2);
 
@@ -849,7 +921,11 @@ public class manyScreensAndroidFlick72px extends PApplet {
 //    ellipse(buttonsArrayList.get(whichPic).x, buttonsArrayList.get(whichPic).y, buttonsArrayList.get(whichPic).w/2, buttonsArrayList.get(whichPic).w/2);
 
             if (!testing) {
-                sendPGraphicsToPoi(pg, 0);
+                if(backwards) {
+                    sendPGraphicsToPoiBackwards(pg, whichPic);
+                } else {
+                    sendPGraphicsToPoi(pg, whichPic);
+                }
             }
         }
 
@@ -871,8 +947,12 @@ public class manyScreensAndroidFlick72px extends PApplet {
     int r, g, b;
     int numPixels = 72; //this can change
 
+    DatagramSocket udpSocket;
+    DatagramSocket udpSocket2;
+
     public void sendPGraphicsToPoi(PGraphics pgSend, int sendOpt) {
         int pixelCounter = 0;
+        int pixelCounter2 = 0;
         byte[] message = new byte[numPixels];
         byte[] bigpx = new byte[72];
         for (int a = 0; a < pgSend.width*pgSend.height; a++) {
@@ -929,6 +1009,7 @@ public class manyScreensAndroidFlick72px extends PApplet {
             //need to pre-load pic into array or it slows down serial!
             //delay(1);
             pixelCounter++;
+            pixelCounter2++;
 
             if (pixelCounter == pgSend.width) {
                 if(!testing){
@@ -959,6 +1040,154 @@ public class manyScreensAndroidFlick72px extends PApplet {
         }
     }
 
+
+    public void sendPGraphicsToPoiBackwards(PGraphics pgSend, int sendOpt) {
+
+
+
+
+
+        int pixelCounter = pgSend.width-1;
+        byte[] message = new byte[numPixels];
+        byte[] bigpx = new byte[72];
+//        for (int a = 0; a < pgSend.width*pgSend.height; a++) {
+        for (int a = pgSend.width*pgSend.height-1; a > -1; a--) { //rotates 180 degrees this does!
+//            if (pixelCounter == 0) {
+//                //port.write(byte(startByte));
+//            }
+            //float dimmerR = red(pgSend.pixels[a])-(red(pgSend.pixels[a])*brightnessDown);
+            float dimmerR = (pgSend.pixels[a] >> 16 & 0xFF)-((pgSend.pixels[a] >> 16 & 0xFF));
+            //float dimmerG = green(pgSend.pixels[a])-(green(pgSend.pixels[a])*brightnessDown);
+            float dimmerG = (pgSend.pixels[a] >> 8 & 0xFF)-((pgSend.pixels[a] >> 8 & 0xFF));
+            //float dimmerB = blue(pgSend.pixels[a])-(blue(pgSend.pixels[a])*brightnessDown);
+            float dimmerB = (pgSend.pixels[a] & 0xFF)-((pgSend.pixels[a] & 0xFF));
+
+            //    r = (int) red(pgSend.pixels[a]);
+            //    g = (int) green(pgSend.pixels[a]);
+            //    b = (int) blue(pgSend.pixels[a]);
+            //r = (int) red(pgSend.pixels[a]) - (int) dimmerR;
+            r = (int) pgSend.pixels[a] >> 16 & 0xFF - (int) dimmerR;
+            //g = (int) green(pgSend.pixels[a]) - (int) dimmerG;
+            g = (int) pgSend.pixels[a] >> 8 & 0xFF - (int) dimmerG;
+            //b = (int) blue(pgSend.pixels[a]) - (int) dimmerB;
+            b = (int) pgSend.pixels[a] & 0xFF - (int) dimmerB;
+            //port.write(pixelConverter(r, g , b)+127);
+            ////////UDP Send://///////////////////////////////////
+
+            byte Y = PApplet.parseByte(pixelConverter(r, g, b)+127);
+            message[pixelCounter] = Y;
+            //bigpx[pixelCounter] = Y; //72px test code
+
+            //need to pre-load pic into array or it slows down serial!
+            //delay(1);
+            pixelCounter--;
+
+            if (pixelCounter == -1) {
+                if(!testing){
+
+                    //old:
+                    udp.send(message, ip, UDPport); //disable for testing
+                    udp.send(message, ip2, UDPport); //disable for testing
+                }
+                pixelCounter = pgSend.width-1;
+            }
+
+
+            //delay(100);
+        }
+
+
+    }
+
+    void message1(PImage cImg, String name) {
+        String messagePath = Environment.getExternalStorageDirectory().getPath() + "/Pictures/SmartPoi/WirelessSmartPoi72px/Messages1/";
+
+        int   r, g, b;
+        byte encodedRGB;
+        cImg.loadPixels();
+        int len1 = cImg.height;
+        int width1 = cImg.width;
+        int cImgSize = len1*width1;
+        byte[] testBin = new byte[cImgSize];
+
+        for (int y = 0; y < cImg.height; y++) {    //height
+            if (y == len1-1) {
+                    for (int x = 0; x < cImg.width; x++) {   //width
+                    int loc = x + y*cImg.width;
+
+                    if(x == 0) {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    } else if(x == (width1-1)) {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+//                    output.println("};");
+//                    output.println("struct pattern " + name + " = {" + width1 + ", " + len1 + "," + name + "Data};"); //not needed?
+                    } else {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    }
+
+                }//end for x
+                break;
+            }//end if y
+            else { //if y
+                for (int x = 0; x < cImg.width; x++) {   //width
+                    int loc = x + y*cImg.width;
+                    if(x == 0) {
+                        r = (int) red(cImg.pixels[loc]);
+                        // println("r is " + r);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    } else if(x == (width1-1)) {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    } else {
+                        r = (int) red(cImg.pixels[loc]);
+                        g = (int) green(cImg.pixels[loc]);
+                        b = (int) blue(cImg.pixels[loc]);
+                        encodedRGB = PApplet.parseByte((r & 0xE0) | ((g & 0xE0)>>3) | (b >> 6));
+                        testBin[loc] = encodedRGB;
+                    }
+                }//end for x
+            }//end if y
+        }//end for y
+        saveBytes(messagePath + name + ".bin", testBin);
+
+        //send:
+        String url ="http://192.168.1.1/edit";
+        try {
+            upload(url, new File(messagePath + name + ".bin"));
+        } catch (java.io.IOException e){
+
+        }
+    }
+
+    //OkHttp send:
+    public void upload(String url, File file) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody formBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(MediaType.parse("application/octet-stream"), file))
+                .build();
+        Request request = new Request.Builder().url(url).post(formBody).build();
+        Response response = client.newCall(request).execute();
+    }
 /*
     public void sendPGraphicsToPoi(PGraphics pgSend, int sendOpt) {
         int pixelCounter = 0;
