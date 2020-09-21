@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -152,7 +153,7 @@ public class manyScreensAndroidFlick extends PApplet {
         if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
             ssid = wifiInfo.getSSID();
         }
-        println("ssid is: " + ssid);
+        //println("ssid is: " + ssid);
         //double quotation marks for ssid always apparently!
 //        String expectedSSID = "\"Smart_Poi_2\""; //todo: put this in saved settings
 
@@ -161,56 +162,56 @@ public class manyScreensAndroidFlick extends PApplet {
         String expectedSSID2 = res.getString(R.string.ap_name2); //todo: put in saved settings
         String expectedSSID3 = res.getString(R.string.ap_name3); //todo: put in saved settings
         if(ssid.equals(expectedSSID) || ssid.equals(expectedSSID2) || ssid.equals(expectedSSID3)){ //compare strings - why the hell doesn't this work????
-            println("AP Mode Hard Coded Now!");
+            //println("AP Mode Hard Coded Now!");
         } else {
             onRouter = true;
             //todo: add more .equals calls for different poi? maybe not now...
-            println("Router Network - using saved settings");
+            //println("Router Network - using saved settings");
 //        }
             //load all preferences:
             sharedpreferences = this.getActivity().getSharedPreferences("mypref", 0);
             if (sharedpreferences.contains(ipa1Saved)) { //is it saved? use this...
                 ipa = sharedpreferences.getString(ipa1Saved, "192");
-                println("ipa is: " + ipa);
+                //println("ipa is: " + ipa);
             } else {
                 ipa = "192";
             }
             if (sharedpreferences.contains(ipa2Saved)) { //is it saved? use this...
                 ipb = sharedpreferences.getString(ipa2Saved, "168");
-                println("ipb is: " + ipb);
+                //println("ipb is: " + ipb);
             } else {
                 ipb = "168";
             }
             if (sharedpreferences.contains(ipa3Saved)) { //is it saved? use this...
                 ipc = sharedpreferences.getString(ipa3Saved, "8");
-                println("ipc is: " + ipc);
+                //println("ipc is: " + ipc);
             } else {
                 ipc = "8";
             }
             if (sharedpreferences.contains(ipa4Saved)) { //is it saved? use this...
                 ipd = sharedpreferences.getString(ipa4Saved, "78");
-                println("ipd is: " + ipd);
+                //println("ipd is: " + ipd);
 
             } else {
                 ipd = "78";
-                println("no ipd");
+                //println("no ipd");
             }
             if (sharedpreferences.contains(ipa5Saved)) { //is it saved? use this...
                 ipe = sharedpreferences.getString(ipa5Saved, "79");
-                println("ipe is: " + ipe);
+                //println("ipe is: " + ipe);
 
             } else {
                 ipe = "79";
-                println("no ipe");
+                //println("no ipe");
             }
 
-            println("ip before: " + ip);
+            //println("ip before: " + ip);
             ip = ipa + "." + ipb + "." + ipc + "." + ipd;
-            println("ip after: " + ip);
+            //println("ip after: " + ip);
 
-            println("ip2 before: " + ip2);
+            //println("ip2 before: " + ip2);
             ip2 = ipa + "." + ipb + "." + ipc + "." + ipe;
-            println("ip2 after: " + ip2);
+            //println("ip2 after: " + ip2);
         } //now ip only changed from default if AP not connected direct!
 ////////////////////////////////////End Saved Wifi://////////////////////////////////////////
         background(100);
@@ -244,9 +245,9 @@ public class manyScreensAndroidFlick extends PApplet {
                 sunflower);
         buttonBackwards = new Button (  width/6*3, height/6*5,
                 width/6, height/6,
-                true, color (0, 0, 0), //Black button
+                true, color (0, 40, 0), //green button
                 true, color (100),
-                "IMAGE\nBACKWARDS",
+                "IMAGE\nUPLOAD",
                 "",
                 1,
                 sunflower);
@@ -262,15 +263,18 @@ public class manyScreensAndroidFlick extends PApplet {
         pg = createGraphics(36, 36);
 
         brightnessSlider = cp5.addSlider("BRT")
-                .setPosition(0, height/6*2)
+                .setPosition(width/3, height/6*2)
                 .setSize(width/3, height/6*3)
                 .setRange(0, 1) //multiplies by sequenceShowTime
                 .setValue(1.0f)
+                .setNumberOfTickMarks(10)
+//                .setLabel("SPEED")
+//                .setLabelVisible(true)
 //                .setValue(0.0f) //0 for select one pic at a time 1.0 is for change every sequenceShowTime seconds
-                .setColorForeground(color(150, 100, 100, 100)) //now opaque?
-                .setColorBackground(color(50, 0, 0, 100))
-                .setColorActive(color(100, 50, 50, 100))
-                .setVisible(false) //no more menu button need button to activate this
+//                .setColorForeground(color(50, 150, 50, 100)) //now opaque?
+//                .setColorBackground(color(50, 150, 50, 100))
+//                .setColorActive(color(50, 150, 50, 100))
+                .setVisible(false) //
         ;
         ellipseMode(CORNER);
 
@@ -301,9 +305,22 @@ public class manyScreensAndroidFlick extends PApplet {
     } //end draw()
 
     public void BRT(float theBRT) { //called on slider change?
-        showOnce = true;
         BRT = theBRT;
-        sequenceShowTime = PApplet.parseInt(6000*BRT);
+        sequenceShowTime = PApplet.parseInt(10000*BRT); //up to 10 seconds..
+        int roundedShowTime = PApplet.parseInt(sequenceShowTime/1000);
+        String sendShowTime = str(roundedShowTime);
+        //send post request changing time:
+        String url ="http://" + ip + "/intervalChange";
+        String url2 ="http://" + ip2 + "/intervalChange";
+        try {
+            post(url, sendShowTime);
+            post(url2, sendShowTime);
+        } catch (java.io.IOException e){
+
+        }
+        showOnce = true;
+        //now disable, so we can't change more and send too many post requests:
+        brightnessSlider.setVisible(false);
     }
 
     public void mousePressed() {
@@ -327,6 +344,7 @@ public class manyScreensAndroidFlick extends PApplet {
         if (buttonBackwards.over()) {
 
             backwards = !backwards;
+
         }
         if(sequenceShowTime<10){ //slider is on 0, so we choose the pic manually...
 //            brightnessSlider.setVisible(false);
@@ -467,7 +485,7 @@ public class manyScreensAndroidFlick extends PApplet {
             if(data[i] == 97){ //ascii 'a'
                 print("processing data....a");
                 whichPic++;
-                println("changing pic");
+                //println("changing pic");
                 if(whichPic>screensArrayList.get(currentScreen).buttonsArrayList.size()-1){
                     whichPic = 0;
                 }
@@ -476,7 +494,7 @@ public class manyScreensAndroidFlick extends PApplet {
                 print("processing data....c");
                 //background(0); //refresh
                 screenBlank = false; //show pics again on swipe only
-                println("change screen!");
+                //println("change screen!");
                 background(100);
                 whichPic = 0;
                 showOnce = true;
@@ -489,7 +507,7 @@ public class manyScreensAndroidFlick extends PApplet {
                 print(PApplet.parseChar(data[i]));
             }
         }
-        println();
+        //println();
     }
 
 
@@ -614,20 +632,20 @@ public class manyScreensAndroidFlick extends PApplet {
             if(numPixels == 36) {
                 createCheckDirectory(collectionPath + str(num) + "/");
             //file open code:///////////////////////////////////////
-            println("collection path is: " + collectionPath + str(num));
+            //println("collection path is: " + collectionPath + str(num));
             filenames = loadFilenames(collectionPath + str(num) + "/");
             Arrays.sort(filenames); //sorts filenames in alphabetical order??? I hope so!
-            println("files:");
-            println(filenames);
+            //println("files:");
+            //println(filenames);
             images = new PImage[filenames.length];
             } else if(numPixels == 72){
                 createCheckDirectory(collectionPath2 + str(num) + "/");
                 //file open code:///////////////////////////////////////
-                println("collection path is: " + collectionPath2 + str(num));
+                //println("collection path is: " + collectionPath2 + str(num));
                 filenames = loadFilenames(collectionPath2 + str(num) + "/");
                 Arrays.sort(filenames); //sorts filenames in alphabetical order??? I hope so!
-                println("files:");
-                println(filenames);
+                //println("files:");
+                //println(filenames);
                 images = new PImage[filenames.length];
             }
             //below to load all images into array - too big images = out of memory error!
@@ -687,7 +705,7 @@ public class manyScreensAndroidFlick extends PApplet {
             fill(255);
             text("Screen " + num, width / 5 * 2, height / 5 * 4 + height / 10);
             if (showOnce) {
-                println("showOnce Screen: " + num);
+                //println("showOnce Screen: " + num);
                 for (int i = 0; i < buttonsArrayList.size(); i++) {
                     buttonsArrayList.get(i).display();
                     buttonSwitchScreen.display();
@@ -699,7 +717,7 @@ public class manyScreensAndroidFlick extends PApplet {
 
             if (millis() > 0) {
                 if (millis() - timer >= sequenceShowTime) { //every 2 seconds
-                    println(millis());
+                    //println(millis());
                     /////////////////////////////////////////////////////////////////////////PG once//////////////////////////////////////////////////////////////////////////
                     if (whichPic >= buttonsArrayList.size() - 1) {
                         if (sequenceShowTime > 0) { // if slider is 0 don't change pics
@@ -721,7 +739,7 @@ public class manyScreensAndroidFlick extends PApplet {
                     }
                     pg.beginDraw();
                     pg.image(buttonsArrayList.get(whichPic).pic(), 0, 0);
-                    println("whichPic is now: " + whichPic);
+                    //println("whichPic is now: " + whichPic);
                     pg.endDraw();
                     /////////////////////////////////////////////////////////////////
                     //convert to bin and upload via post request here:
@@ -731,7 +749,11 @@ public class manyScreensAndroidFlick extends PApplet {
                         message1(pg, nameAlphabet);
                     }
                     //////////////////////////////////////////////////////////////////
-                    fill(255, 0, 0);
+                    if(backwards){
+                        fill(0, 255, 0); //green for upload
+                    } else {
+                        fill(255, 0, 0);
+                    }
                     ellipse(buttonsArrayList.get(whichPic).x, buttonsArrayList.get(whichPic).y, buttonsArrayList.get(whichPic).w / 2, buttonsArrayList.get(whichPic).w / 2);
 //                    println("ellipse here");
                     timer = millis(); //test as well
@@ -1197,12 +1219,42 @@ public class manyScreensAndroidFlick extends PApplet {
         saveBytes(messagePath + name + ".bin", testBin);
 
         //send:
-        String url ="http://192.168.1.1/edit";
+        String url ="http://" + ip + "/edit";
+        String url2 ="http://" + ip2 + "/edit";
         try {
             upload(url, new File(messagePath + name + ".bin"));
+            upload(url2, new File(messagePath + name + ".bin"));
         } catch (java.io.IOException e){
 
         }
+    }
+
+    //OkHttp post:
+    public void post(String url, String interval) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("interval", interval)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request)
+                .enqueue(new Callback() {
+                    @Override
+                    public void onFailure(final Call call, IOException e) {
+                        // Error
+                    }
+
+                    @Override
+                    public void onResponse(Call call, final Response response) throws IOException {
+                        String res = response.body().string();
+
+                        // Do something with the response
+                    }
+                });
     }
 
     //OkHttp send:

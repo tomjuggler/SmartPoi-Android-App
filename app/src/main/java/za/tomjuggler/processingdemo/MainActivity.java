@@ -41,6 +41,7 @@ import za.tomjuggler.processingdemo.sketch.OwnThing;
 import za.tomjuggler.processingdemo.sketch.PGraphics_Pattern_Template;
 import za.tomjuggler.processingdemo.sketch.Particles;
 import za.tomjuggler.processingdemo.sketch.Settings_Frag;
+import za.tomjuggler.processingdemo.sketch.Speed;
 import za.tomjuggler.processingdemo.sketch.ZapGame;
 import za.tomjuggler.processingdemo.sketch.android_fft_minim.android_fft_minim;
 import za.tomjuggler.processingdemo.sketch.manyScreensAndroidFlick;
@@ -314,6 +315,9 @@ public void updateSharedPreferences(){
                 isFrag = false;
                 break;
             case 9:
+                fragment = new Speed();
+                break;
+            case 10:
                 fragment = new PApplet();
                 break;
             default:

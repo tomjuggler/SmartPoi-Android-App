@@ -154,7 +154,7 @@ String ssid;
         if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
             ssid = wifiInfo.getSSID();
         }
-        println("ssid is: " + ssid);
+        //println("ssid is: " + ssid);
         //double quotation marks for ssid always apparently!
 //        String expectedSSID = "\"Smart_Poi_2\""; //
         Resources res = getResources();
@@ -162,56 +162,56 @@ String ssid;
         String expectedSSID2 = res.getString(R.string.ap_name2); //todo: put in saved settings
         String expectedSSID3 = res.getString(R.string.ap_name3); //todo: put in saved settings
         if(ssid.equals(expectedSSID) || ssid.equals(expectedSSID2) || ssid.equals(expectedSSID3)){ //compare strings - why the hell doesn't this work????
-            println("AP Mode Hard Coded Now!");
+            //println("AP Mode Hard Coded Now!");
         } else {
             onRouter = true;
             //todo: add more .equals calls for different poi? maybe not now...
-            println("Router Network - using saved settings");
+            //println("Router Network - using saved settings");
 //        }
             //load all preferences:
             sharedpreferences = this.getActivity().getSharedPreferences("mypref", 0);
             if (sharedpreferences.contains(ipa1Saved)) { //is it saved? use this...
                 ipa = sharedpreferences.getString(ipa1Saved, "192");
-                println("ipa is: " + ipa);
+                //println("ipa is: " + ipa);
             } else {
                 ipa = "192";
             }
             if (sharedpreferences.contains(ipa2Saved)) { //is it saved? use this...
                 ipb = sharedpreferences.getString(ipa2Saved, "168");
-                println("ipb is: " + ipb);
+                //println("ipb is: " + ipb);
             } else {
                 ipb = "168";
             }
             if (sharedpreferences.contains(ipa3Saved)) { //is it saved? use this...
                 ipc = sharedpreferences.getString(ipa3Saved, "8");
-                println("ipc is: " + ipc);
+                //println("ipc is: " + ipc);
             } else {
                 ipc = "8";
             }
             if (sharedpreferences.contains(ipa4Saved)) { //is it saved? use this...
                 ipd = sharedpreferences.getString(ipa4Saved, "78");
-                println("ipd is: " + ipd);
+                //println("ipd is: " + ipd);
 
             } else {
                 ipd = "78";
-                println("no ipd");
+                //println("no ipd");
             }
             if (sharedpreferences.contains(ipa5Saved)) { //is it saved? use this...
                 ipe = sharedpreferences.getString(ipa5Saved, "79");
-                println("ipe is: " + ipe);
+                //println("ipe is: " + ipe);
 
             } else {
                 ipe = "79";
-                println("no ipe");
+                //println("no ipe");
             }
 
-            println("ip before: " + ip);
+            //println("ip before: " + ip);
             ip = ipa + "." + ipb + "." + ipc + "." + ipd;
-            println("ip after: " + ip);
+            //println("ip after: " + ip);
 
-            println("ip2 before: " + ip2);
+            //println("ip2 before: " + ip2);
             ip2 = ipa + "." + ipb + "." + ipc + "." + ipe;
-            println("ip2 after: " + ip2);
+            //println("ip2 after: " + ip2);
         } //now ip only changed from default if AP not connected direct!
 ////////////////////////////////////End Saved Wifi://////////////////////////////////////////
         orientation(PORTRAIT);
