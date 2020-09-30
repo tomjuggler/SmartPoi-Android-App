@@ -245,7 +245,7 @@ public class manyScreensAndroidFlick extends PApplet {
                 sunflower);
         buttonBackwards = new Button (  width/6*3, height/6*5,
                 width/6, height/6,
-                true, color (0, 40, 0), //green button
+                true, color (0, 100, 0), //green button
                 true, color (100),
                 "IMAGE\nUPLOAD",
                 "",
@@ -328,10 +328,11 @@ public class manyScreensAndroidFlick extends PApplet {
             showSlider = !showSlider;
             /////////////////////////////////////brightness slider/////////////////////////////////////////////////////
             if (showSlider) {
-                //text(BRT, 100, 100);
+                buttonSwitchScreen.colorFill = color(0, 0, 200);
                 brightnessSlider.setVisible(true);
                 showOnce = true; //redraw screen
             } else {
+                buttonSwitchScreen.colorFill = color(0, 0, 0);
                 brightnessSlider.setVisible(false);
                 showOnce = true; //redraw screen
             }
@@ -342,9 +343,14 @@ public class manyScreensAndroidFlick extends PApplet {
             screenBlank = !screenBlank;
         }
         if (buttonBackwards.over()) {
-
             backwards = !backwards;
-
+            if(backwards){
+                buttonBackwards.colorFill = color(0, 200, 0);
+                showOnce = true;
+            } else{
+                buttonBackwards.colorFill = color(0, 0, 0);
+                showOnce = true;
+            }
         }
         if(sequenceShowTime<10){ //slider is on 0, so we choose the pic manually...
 //            brightnessSlider.setVisible(false);

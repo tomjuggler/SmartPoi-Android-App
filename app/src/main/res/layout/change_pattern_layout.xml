@@ -26,45 +26,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/holo_red_light"
-            android:text="Pattern 1" />
+            android:text="PALETTE PATTERNS" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/send_request2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pattern 2" />
+            android:text="IMAGES 0-4" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/send_request3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pattern 3" />
+            android:text="IMAGES 5-10" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/send_request4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pattern 4" />
+            android:text="IMAGES 11-20" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/send_request5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pattern 5" />
+            android:text="IMAGES 0-52" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/send_request6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/holo_orange_light"
-            android:text="Pattern 6" />
+            android:text="ON OFF SWITCH PATTERN" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="182dp"
-            android:text="1.Poi pattern"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="182dp"-->
+<!--            android:text="1.Poi pattern"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold" />-->
 
         <TextView
             android:id="@+id/response"
