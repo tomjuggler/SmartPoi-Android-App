@@ -147,11 +147,13 @@ public class manyScreensAndroidFlick72px extends PApplet {
     @Override
     public void setup() {
 ////////////////////////////////////Saved Wifi://////////////////////////////////////////
-        WifiManager wifiManager = (WifiManager) this.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo;
-        wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-            ssid = wifiInfo.getSSID();
+        if(isNetworkAvailable()) { //this does nothing as far as I can tell
+            WifiManager wifiManager = (WifiManager) this.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo;
+            wifiInfo = wifiManager.getConnectionInfo();
+            if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+                ssid = wifiInfo.getSSID();
+            }
         }
         //println("ssid is: " + ssid);
         //double quotation marks for ssid always apparently!
@@ -304,6 +306,15 @@ public class manyScreensAndroidFlick72px extends PApplet {
         }
         //println(currentScreen);
     } //end draw()
+
+    //connectivity check test:
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
 
     public void BRT(float theBRT) { //called on slider change?
         BRT = theBRT;
