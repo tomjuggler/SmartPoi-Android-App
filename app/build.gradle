@@ -27,5 +27,6 @@ dependencies {
     implementation files('libs/SelectFile.jar')
     implementation 'com.squareup.okhttp3:okhttp:4.1.0'
     implementation 'com.android.volley:volley:1.1.0'
+    implementation files('libs/apwidgets.jar')
 //    compile files('libs/processing-core.jar')
 }

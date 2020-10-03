@@ -114,7 +114,8 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_ZapGame),
                         getString(R.string.title_Settings),
                         getString(R.string.title_Change_Pattern),
-                        getString(R.string.title_Speed)
+                        getString(R.string.title_Speed),
+                        getString(R.string.title_TextOnly)
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;

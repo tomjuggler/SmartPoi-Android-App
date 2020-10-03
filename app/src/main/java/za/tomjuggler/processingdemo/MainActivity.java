@@ -48,6 +48,7 @@ import za.tomjuggler.processingdemo.sketch.manyScreensAndroidFlick;
 import za.tomjuggler.processingdemo.sketch.TimelineOnly;
 import processing.core.PApplet;
 import za.tomjuggler.processingdemo.sketch.manyScreensAndroidFlick72px;
+import za.tomjuggler.processingdemo.sketch.textOnly;
 
 import static android.R.attr.key;
 import static android.R.attr.searchSuggestIntentData;
@@ -318,6 +319,9 @@ public void updateSharedPreferences(){
                 fragment = new Speed();
                 break;
             case 10:
+                fragment = new textOnly();
+                break;
+            case 11:
                 fragment = new PApplet();
                 break;
             default:
