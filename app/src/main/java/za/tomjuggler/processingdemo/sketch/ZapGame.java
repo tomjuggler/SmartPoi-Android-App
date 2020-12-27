@@ -102,6 +102,7 @@ public class ZapGame extends PApplet {
     /////////////////////////////////////end Saved Wifi///////////////////////////////////////
     @Override
     public void setup() {
+        frameRate(1);
 ////////////////////////////////////Saved Wifi://////////////////////////////////////////
         WifiManager wifiManager = (WifiManager) this.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo;
@@ -214,7 +215,44 @@ public class ZapGame extends PApplet {
 
     @Override
     public void draw() {
+//        if (mouseY > height/2) {
+            for (int i = 0; i < 37; i++) {
+                int varX = xInt;
+//      drawColouredThing(color(myKnobRed.getValue(), myKnobGreen.getValue(), myKnobBlue.getValue()), varX, 1);
+                drawColouredThing(color(255, 0, 255), varX, 1);
+                xInt++;
+                delay(20);
+                if (xInt>36) {
+                    goingUp = !goingUp;
+                    incrDn++;
+                    if (incrDn > 8) {
+                        background(0);
+                        incrDn = 0;
+                    }
+                    xInt = 0;
+                }
+            }
+//        } else {
+            for (int i = 0; i < 37; i++) {
+                int varX = xInt;
+//      drawColouredThing(color(myKnobRed.getValue(), myKnobGreen.getValue(), myKnobBlue.getValue()), varX, 2);
+                drawColouredThing(color(0, 255, 255), varX, 2);
+                xInt++;
+                delay(20);
+                if (xInt>36) {
 
+                    goingUp = !goingUp;
+                    incrDn++;
+                    if (incrDn > 8) {
+                        background(0);
+                        incrDn = 0;
+                    }
+                    xInt = 0;
+                }
+            }
+//        }
+        ///////////////////////////////mousePressed()///////////////////////////
+        /*
         drawColouredThing(color(0, 0, 0), 0, 0);
         speed = mouseX;
         println(speed);
@@ -222,6 +260,7 @@ public class ZapGame extends PApplet {
         rect(0, 0, width, height/2);
         fill(255, 0, 255);
         rect(0, height/2, width, height/2);
+         */
 
     }
 

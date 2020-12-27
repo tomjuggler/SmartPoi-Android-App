@@ -1,6 +1,7 @@
 package za.tomjuggler.processingdemo;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +45,7 @@ import za.tomjuggler.processingdemo.sketch.Settings_Frag;
 import za.tomjuggler.processingdemo.sketch.Speed;
 import za.tomjuggler.processingdemo.sketch.ZapGame;
 import za.tomjuggler.processingdemo.sketch.android_fft_minim.android_fft_minim;
+import za.tomjuggler.processingdemo.sketch.createFolderSaveFileInside;
 import za.tomjuggler.processingdemo.sketch.manyScreensAndroidFlick;
 import za.tomjuggler.processingdemo.sketch.TimelineOnly;
 import processing.core.PApplet;
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity
 
 
     Context mContext;
+
+    public boolean setItUp = false;
 
 //    public static final String ipa1Saved = "mypref";
     @Override
@@ -189,6 +193,13 @@ public class MainActivity extends AppCompatActivity
             println("connected to : " + wifiManager.getConnectionInfo());
 */
         /////////////////////////////////////////////////////////////end connect to wifi test /////////////////
+
+//start with beat sketch:
+        //todo: save last used sketch here?
+        android_fft_minim myf = new android_fft_minim();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.add(R.id.container, myf);
+        transaction.commit();
     }
 public void updateSharedPreferences(){
     //connect to poi here and get settings? ///////////////////////////////////////////////////////////////
@@ -260,72 +271,81 @@ public void updateSharedPreferences(){
 //        ipa1 = sharedpreferences.getString(ipa1Saved, "1"); //this crashes app!
 
         //change all Fragments to Activities???
-        switch (position) {
-            case 0:
-                fragment = new manyScreensAndroidFlick();
-                break;
-            case 1:
-                fragment = new manyScreensAndroidFlick72px();
-                break;
-            case 2:
-                fragment = new Brightness();
-                break;
-            case 3:
-                fragment = new PGraphics_Pattern_Template();
-                break;
-            case 4:
-                fragment = new TimelineOnly();
-                break;
-            case 5:
-                fragment = new android_fft_minim();
-                break;
-            case 6:
-                fragment = new ZapGame();
-                break;
-            case 7: //settings screen, not Processing code:
+        if(!setItUp) {
+            switch (position) {
+                case 0:
+                    fragment = new manyScreensAndroidFlick();
+                    break;
+                case 1:
+                    fragment = new manyScreensAndroidFlick72px();
+                    break;
+                case 2:
+                    fragment = new Brightness();
+                    break;
+                case 3:
+                    fragment = new PGraphics_Pattern_Template();
+                    break;
+                case 4:
+                    fragment = new TimelineOnly();
+                    break;
+                case 5:
+                    fragment = new android_fft_minim();
+                    break;
+                case 6:
+                    fragment = new ZapGame();
+                    break;
+                case 7: //settings screen, not Processing code:
 
 //                fragment = new R.id.bodyFrag;
 //                settingsAct = new Settings_Frag();
 //                fragment = new Fragment();
 //                setContentView(R.layout.settings_layout);
-                Intent intent = new Intent(this,Settings_Frag.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-                startActivity(intent);
+                    Intent intent = new Intent(this, Settings_Frag.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+                    startActivity(intent);
 //                this.finish();
 
 //                fragment = new Settings_Frag();//hack
 //                fragment = new PApplet(); //what is this doing here?????????
-                fragment = null; //now why would anyone do this?
-                isFrag = false;
-                break;
-            case 8: //Change Pattern screen, not Processing code:
+                    fragment = null; //now why would anyone do this?
+                    isFrag = false;
+                    break;
+                case 8: //Change Pattern screen, not Processing code:
 
 //                fragment = new R.id.bodyFrag;
 //                settingsAct = new Settings_Frag();
 //                fragment = new Fragment();
 //                setContentView(R.layout.settings_layout);
-                Intent intent2 = new Intent(getApplicationContext(),Change_Pattern_Frag.class);
-                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-                startActivity(intent2);
-                //below stops activity from going back to main screen.
+                    Intent intent2 = new Intent(getApplicationContext(), Change_Pattern_Frag.class);
+                    intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+                    startActivity(intent2);
+                    //below stops activity from going back to main screen.
 //                this.finish(); //todo: test do I need this in order for pattern transmit codes to work?
 
 //                fragment = new Settings_Frag();//hack
 //                fragment = new PApplet(); //what is this doing here?????????
-                fragment = null; //now why would anyone do this?
-                isFrag = false;
-                break;
-            case 9:
-                fragment = new Speed();
-                break;
-            case 10:
-                fragment = new textOnly();
-                break;
-            case 11:
-                fragment = new PApplet();
-                break;
-            default:
-                throw new UnsupportedOperationException("Invalid position");
+                    fragment = null; //now why would anyone do this?
+                    isFrag = false;
+                    break;
+                case 9:
+                    fragment = new Speed();
+                    break;
+                case 10:
+                    fragment = new textOnly();
+                    break;
+                //menu item for this? Just for testings..
+//            case 11:
+//                fragment = new createFolderSaveFileInside();
+//
+//                break;
+                case 11:
+                    fragment = new PApplet(); //what is this for?
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Invalid position");
+            }
+        } else{
+            fragment = new createFolderSaveFileInside(); //setup
         }
         if(isFrag) {
             fragmentManager.beginTransaction()
@@ -418,9 +438,10 @@ public void updateSharedPreferences(){
             return;
 
         } else if (savedVersionCode == DOESNT_EXIST) {
+
             Log.d("FIRSTRUN", "this is a new install");
             // TODO This is a new install (or the user cleared the shared preferences)
-
+            setItUp = true;
         } else if (currentVersionCode > savedVersionCode) {
             Log.d("FIRSTRUN", "this is an upgrade");
             // TODO This is an upgrade

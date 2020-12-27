@@ -1,5 +1,9 @@
 package za.tomjuggler.processingdemo;
 
+import android.annotation.TargetApi;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -19,10 +23,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 //Tom additions:
 import android.view.WindowManager;
+
+import static za.tomjuggler.processingdemo.R.drawable.*;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -60,6 +67,8 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+//    private ImageView mFlagImageView;
+
     public NavigationDrawerFragment() {
     }
 
@@ -76,10 +85,12 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
+//        mFlagImageView = (ImageView) getActivity().findViewById(R.id.activity_main_imageView);
 
         // Select either the default item (0) or the last selected item.
+        //check first run and then do this:
 //        selectItem(mCurrentSelectedPosition);
-        selectItem(3);
+//        selectItem(3);
     }
 
     @Override
@@ -118,6 +129,8 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_TextOnly)
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+//        Drawable flagDrawable = ContextCompat.getDrawable(this.getActivity(), icon );
+//        mFlagImageView.setImageDrawable(flagDrawable);
         return mDrawerListView;
     }
 
@@ -136,7 +149,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout = drawerLayout;
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
         ActionBar actionBar = getActionBar();
@@ -148,7 +161,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                ic_drawer,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {

@@ -8,6 +8,7 @@ import processing.opengl.*;
 import apwidgets.*;
 
 import android.content.res.Resources;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo; 
 import android.view.inputmethod.InputMethodManager; 
