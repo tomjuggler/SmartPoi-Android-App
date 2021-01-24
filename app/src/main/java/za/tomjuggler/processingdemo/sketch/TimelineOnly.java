@@ -279,7 +279,7 @@ public class TimelineOnly extends PApplet {
         println("ssid is: " + ssid);
         //double quotation marks for ssid always apparently!
 //        String expectedSSID = "\"Smart_Poi_2\""; //todo: put this in saved settings
-
+/*
         Resources res = getResources();
         String expectedSSID = res.getString(R.string.ap_name); //todo: put in saved settings
         String expectedSSID2 = res.getString(R.string.ap_name2); //todo: put in saved settings
@@ -306,10 +306,10 @@ public class TimelineOnly extends PApplet {
                 ipb = "168";
             }
             if (sharedpreferences.contains(ipa3Saved)) { //is it saved? use this...
-                ipc = sharedpreferences.getString(ipa3Saved, "8");
+                ipc = sharedpreferences.getString(ipa3Saved, "1");
                 println("ipc is: " + ipc);
             } else {
-                ipc = "8";
+                ipc = "1";
             }
             if (sharedpreferences.contains(ipa4Saved)) { //is it saved? use this...
                 ipd = sharedpreferences.getString(ipa4Saved, "78");
@@ -336,6 +336,8 @@ public class TimelineOnly extends PApplet {
             ip2 = ipa + "." + ipb + "." + ipc + "." + ipe;
             println("ip2 after: " + ip2);
         } //now ip only changed from default if AP not connected direct!
+
+ */
 ////////////////////////////////////End Saved Wifi://////////////////////////////////////////
 
 //        orientation(LANDSCAPE); //conflicting code causes force close

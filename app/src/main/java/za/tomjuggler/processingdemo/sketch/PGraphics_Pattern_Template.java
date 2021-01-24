@@ -157,6 +157,7 @@ String ssid;
         //println("ssid is: " + ssid);
         //double quotation marks for ssid always apparently!
 //        String expectedSSID = "\"Smart_Poi_2\""; //
+        /*
         Resources res = getResources();
         String expectedSSID = res.getString(R.string.ap_name); //todo: put in saved settings
         String expectedSSID2 = res.getString(R.string.ap_name2); //todo: put in saved settings
@@ -213,6 +214,8 @@ String ssid;
             ip2 = ipa + "." + ipb + "." + ipc + "." + ipe;
             //println("ip2 after: " + ip2);
         } //now ip only changed from default if AP not connected direct!
+
+         */
 ////////////////////////////////////End Saved Wifi://////////////////////////////////////////
         orientation(PORTRAIT);
         textSize(50);

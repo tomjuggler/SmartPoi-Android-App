@@ -113,7 +113,7 @@ public class ZapGame extends PApplet {
         println("ssid is: " + ssid);
         //double quotation marks for ssid always apparently!
 //        String expectedSSID = "\"Smart_Poi_2\""; //todo: put this in saved settings
-
+/*
         Resources res = getResources();
         String expectedSSID = res.getString(R.string.ap_name); //todo: put in saved settings
         String expectedSSID2 = res.getString(R.string.ap_name2); //todo: put in saved settings
@@ -169,6 +169,8 @@ public class ZapGame extends PApplet {
             ip2 = ipa + "." + ipb + "." + ipc + "." + ipe;
             println("ip2 after: " + ip2);
         } //now ip only changed from default if AP not connected direct!
+
+ */
 ////////////////////////////////////End Saved Wifi://////////////////////////////////////////
 
         //frameRate(4);
